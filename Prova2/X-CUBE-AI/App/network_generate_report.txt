@@ -1,0 +1,120 @@
+Neural Network Tools for STM32AI v1.4.1 (STM.ai v6.0.0-RC6)
+Created date       : 2021-11-24 13:47:02
+Parameters         : generate --name network -m C:/Users/user/Desktop/model_MCG_indoor.h5 --type keras --compression 1 --verbosity 1 --workspace C:\Users\user\AppData\Local\Temp\mxAI_workspace653564037711002299566241886044468 --output C:\Users\user\.stm32cubemx
+
+Exec/report summary (generate)
+------------------------------------------------------------------------------------------------------------------------
+model file         : C:\Users\user\Desktop\model_MCG_indoor.h5
+type               : keras
+c_name             : network
+compression        : None
+quantize           : None
+workspace dir      : C:\Users\user\AppData\Local\Temp\mxAI_workspace653564037711002299566241886044468
+output dir         : C:\Users\user\.stm32cubemx
+
+model_name         : model_MCG_indoor
+model_hash         : e14e0919f32d7c3626b3fa80792ef28e
+input              : input_10 [120 items, 480 B, ai_float, FLOAT32, (120, 1, 1)]
+inputs (total)     : 480 B
+output             : dense_9_nl [4 items, 16 B, ai_float, FLOAT32, (1, 1, 4)]
+outputs (total)    : 16 B
+params #           : 8,116 items (31.70 KiB)
+macc               : 956,496
+weights (ro)       : 32,464 B (31.70 KiB) 
+activations (rw)   : 38,592 B (37.69 KiB) 
+ram (total)        : 39,088 B (38.17 KiB) = 38,592 + 480 + 16
+
+Model name - model_MCG_indoor ['input_10'] ['dense_9_nl']
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+id   layer (type)                        shape           param/size     macc      connected to                 |   c_size   c_macc            c_type               
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+0    input_10 (Input)                    (h:120, c:1)                                                          |                             
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1    conv1d_14 (Conv2D)                  (h:120, c:32)   192/768        19,232    input_10                     |            +3,840(+20.0%)    conv2d()[0]          
+     conv1d_14_nl (Nonlinearity)         (h:120, c:32)                  3,840     conv1d_14                    |            -3,840(-100.0%)  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2    conv1d_15 (Conv2D)                  (h:120, c:48)   7,728/30,912   921,648   conv1d_14_nl                 |            +11,520(+1.2%)    optimized_conv2d()[1]
+     conv1d_15_nl (Nonlinearity)         (h:120, c:48)                  5,760     conv1d_15                    |            -5,760(-100.0%)  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3    global_average_pooling1d_9 (Pool)   (h:1, c:48)                    5,760     conv1d_15_nl                 |            -5,760(-100.0%)  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4    dense_9 (Dense)                     (h:1, c:4)      196/784        196       global_average_pooling1d_9   |                              dense()[2]           
+     dense_9_nl (Nonlinearity)           (h:1, c:4)                     60        dense_9                      |                              nl()/o[3]            
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+model/c-model: macc=956,496/956,496  weights=32,464/32,464  activations=--/38,592 io=--/496
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name         : model_mcg_indoor
+c-name             : network
+c-node #           : 4
+c-array #          : 12
+activations size   : 38592
+weights size       : 32464
+macc               : 956496
+inputs             : ['input_10_output_array']
+outputs            : ['dense_9_nl_output_array']
+
+
+C-Arrays (12)
+------------------------------------------------------------------------------------------------------------------------
+c_id  name (*_array)      item/size           mem-pool     c-type       fmt    comment            
+------------------------------------------------------------------------------------------------------------------------
+0     input_10_output     120/480             user         float        float  /input             
+1     conv1d_14_output    3840/15360          activations  float        float                     
+2     conv1d_15_output    48/192              activations  float        float                     
+3     dense_9_output      4/16                activations  float        float                     
+4     dense_9_nl_output   4/16                user         float        float  /output            
+5     conv1d_14_weights   160/640             weights      const float  float                     
+6     conv1d_14_bias      32/128              weights      const float  float                     
+7     conv1d_15_weights   7680/30720          weights      const float  float                     
+8     conv1d_15_bias      48/192              weights      const float  float                     
+9     dense_9_weights     192/768             weights      const float  float                     
+10    dense_9_bias        4/16                weights      const float  float                     
+11    conv1d_15_scratch0  5760/23040          activations  float        float                     
+------------------------------------------------------------------------------------------------------------------------
+
+
+C-Layers (4)
+------------------------------------------------------------------------------------------------------------------------
+c_id  name (*_layer)  id  layer_type        macc        rom         tensors                shape (array id)                       
+------------------------------------------------------------------------------------------------------------------------
+0     conv1d_14       1   conv2d            23072       768         I: input_10_output     [1, 120, 1, 1] (0)                     
+                                                                    W: conv1d_14_weights                                          
+                                                                    W: conv1d_14_bias                                             
+                                                                    O: conv1d_14_output    [1, 120, 1, 32] (1)                    
+------------------------------------------------------------------------------------------------------------------------
+1     conv1d_15       3   optimized_conv2d  933168      30912       I: conv1d_14_output    [1, 120, 1, 32] (1)                    
+                                                                    S: conv1d_15_scratch0                                         
+                                                                    W: conv1d_15_weights                                          
+                                                                    W: conv1d_15_bias                                             
+                                                                    O: conv1d_15_output    [1, 1, 1, 48] (2)                      
+------------------------------------------------------------------------------------------------------------------------
+2     dense_9         4   dense             196         784         I: conv1d_15_output    [1, 1, 1, 48] (2)                      
+                                                                    W: dense_9_weights                                            
+                                                                    W: dense_9_bias                                               
+                                                                    O: dense_9_output      [1, 1, 1, 4] (3)                       
+------------------------------------------------------------------------------------------------------------------------
+3     dense_9_nl      4   nl                60          0           I: dense_9_output      [1, 1, 1, 4] (3)                       
+                                                                    O: dense_9_nl_output   [1, 1, 1, 4] (4)                       
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+Complexity report per layer - macc=956,496 weights=32,464 act=38,592 ram_io=496
+---------------------------------------------------------------------------
+id   name         c_macc                    c_rom                     c_id
+---------------------------------------------------------------------------
+1    conv1d_14    |                  2.4%   |                  2.4%   [0] 
+2    conv1d_15    ||||||||||||||||  97.6%   ||||||||||||||||  95.2%   [1] 
+4    dense_9      |                  0.0%   |                  2.4%   [2] 
+4    dense_9_nl   |                  0.0%   |                  0.0%   [3] 
+
+Generated files (5)
+------------------------------------------------------------------------------------------------------------------------
+C:\Users\user\.stm32cubemx\network_config.h
+C:\Users\user\.stm32cubemx\network.h
+C:\Users\user\.stm32cubemx\network.c
+C:\Users\user\.stm32cubemx\network_data.h
+C:\Users\user\.stm32cubemx\network_data.c
